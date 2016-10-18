@@ -49,9 +49,10 @@
 
             window.onload = function () {
                 // create a fullscreen WebGL renderer for the three.js content and add to the DOM
-                renderer = new THREE.WebGLRenderer();
+                renderer = new THREE.WebGLRenderer({alpha:true});
                 renderer.setPixelRatio( window.devicePixelRatio );
                 renderer.setSize( rendererWidth, rendererHeight );
+                renderer.setClearColor(0xffffff,0);
                 document.body.appendChild( renderer.domElement );
 
                 // create a three.js camera and scene
