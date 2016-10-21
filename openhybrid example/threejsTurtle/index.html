@@ -52,7 +52,7 @@
                 renderer = new THREE.WebGLRenderer({alpha:true});
                 renderer.setPixelRatio( window.devicePixelRatio );
                 renderer.setSize( rendererWidth, rendererHeight );
-                renderer.setClearColor(0xffffff,0);
+                renderer.setClearColor(0xffffff,0); // **Make the background to transparent . 
                 document.body.appendChild( renderer.domElement );
 
                 // create a three.js camera and scene

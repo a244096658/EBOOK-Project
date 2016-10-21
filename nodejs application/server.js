@@ -8,7 +8,7 @@ function serverStart(route){ //Make a function as a parameter. 将函数作为�
     function onRequest(request,response){
 
 
-    response.setHeader("Content-Type", "text/json");
+    response.setHeader("Content-Type", "text/plain");
     response.setHeader("Access-Control-Allow-Origin", "*");
 
     console.log("HTTP Request received");

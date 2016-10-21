@@ -15,31 +15,49 @@
 
             // Put the whole Jquery code under this document.ready function.
            
+           var resDataJson={} ; //Define the variable as a object ,for storing the responseData from the server
+
+           function changeDOM(text){
+               $("#p1").text("The movie titles are "+text);
+           };
+
+
             $(document).ready(function(){ // make a click event, and put ajax under this click function.
 
                 $("#button").bind("click touchstart",function(){  //bind("click touchstart" function) is for Ipad touch, because there maybe no click event in Ipad. 
 
                      var content = $("#name").val(); // 这个拿value的function需要被call出来的。所以放在了click的方法下。
                                                     // 拿form的值 用 .val() 
-
-
+                
                 $.ajax({
                     type:"POST",
                     url:"http://192.168.1.100:3030", //这次测试只在自己的html,js之间发送。 即只需要 /whatever 即可。  //127.0.0.1 is directing to localhost , so it is direct to server on our own computer.
-                    dataType:"string", //Make the dataType to string.           // So we need 192,168.1.100 which is the ip in my computer, so other device can visit.                                               
+                    dataType:"text", //Make the dataType to text. The "string" is not a ajax dataType, instead, "text" represent the string type.           // So we need 192,168.1.100 which is the ip in my computer, so other device can visit.                                               
                     data:JSON.stringify({"title":content}), //Transfer JSON format to string. We are transferring data, so it is better to make JSON data to string. 
-                    success:function(){alert("Json data sent successfully!")},
-                    error:function(){alert("There are some errors")}
+                    success:function(responseData){ //这是一个回调函数。success后执行什么。 responseData 为server返回的数据。 把需要做的放在这个sucess回调函数中。比如改变DOM.....
+                        alert("Json data sent successfully!");
+                        console.log("The response data is "+responseData+"The data type is "+typeof responseData);
+                        resDataJson = JSON.parse(responseData);//Parse the responseData(str) to Json obj, and store it in resDataJson variable
+                        console.log(resDataJson.title);
+                        changeDOM(resDataJson.title);
+
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){ //这是一个回调函数。error后执行什么。errorThrown include the actual error message. jqXHR includes the reponse information from server. 用于调试。
+                        alert("There are some errors");
+                        alert("The response data is"+jqXHR.responseText+"The type of response data is "+typeof jqXHR.responseText );
+                        alert("The error is"+errorThrown);
+                    }
 
                     //function(){....} 是匿名函数，不需要函数名，直接执行。 可以放置参数，也可以不放置。 
                
-                })
+                });         
 
-                })
 
             });
-            
-            
+                         
+
+            });
+
 
 
             </script>     
@@ -47,9 +65,13 @@
     </head>
 
     <body>
-    <h id="first">change me by ajax </h>
+    <h id="first">Your first Quiz </h>
     <br>
     <br>
+
+    <div>
+        <p id="p1">change me</p>
+    </div>
 
         <form>
             <label>Name</label>
