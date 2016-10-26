@@ -21,9 +21,9 @@ function cypherMergeStart(postData,request,response){
     //Define the response data to the client side. The data is from Neo4j match. 
     
 
-   var dataArray =[];
-   var dataString ='';
-   var responseDataString = {};
+   var dataArray =[]; //Define a array
+   var dataString =''; //Define a string
+   var responseDataString = {}; //Define a JSON object
 
    //Process the data from client side ajax call. 
     session

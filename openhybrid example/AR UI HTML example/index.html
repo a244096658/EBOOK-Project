@@ -32,6 +32,7 @@
                 $.ajax({
                     type:"POST",
                     url:"http://192.168.1.100:3030", //这次测试只在自己的html,js之间发送。 即只需要 /whatever 即可。  //127.0.0.1 is directing to localhost , so it is direct to server on our own computer.
+                    async:true,
                     dataType:"text", //Make the dataType to text. The "string" is not a ajax dataType, instead, "text" represent the string type.           // So we need 192,168.1.100 which is the ip in my computer, so other device can visit.                                               
                     data:JSON.stringify({"title":content}), //Transfer JSON format to string. We are transferring data, so it is better to make JSON data to string. 
                     success:function(responseData){ //这是一个回调函数。success后执行什么。 responseData 为server返回的数据。 把需要做的放在这个sucess回调函数中。比如改变DOM.....
