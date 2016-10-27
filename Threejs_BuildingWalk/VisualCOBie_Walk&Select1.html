@@ -40,6 +40,8 @@
 
 <script>
 
+
+
 		JA.init = function() {
 		JA.container = document.body.appendChild( document.createElement( 'div' ) );
 
@@ -194,7 +196,7 @@
 		
 		        // DUPLEX APARTMENT ARCHITECTURAL MODEL
 		        
-		        loader.load("models/DuplexArc Model.obj", "models/DuplexArc Model.mtl", function (object) {
+		        loader.load("models/DuplexArcModel.obj", "models/DuplexArcModel.mtl", function (object) {
 		            object.translateY(-3);
 		            object.name = 'building';
 		            object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );

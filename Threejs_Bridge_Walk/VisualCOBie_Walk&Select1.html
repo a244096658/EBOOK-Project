@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang=en >
+<head>
+<link rel=stylesheet href=http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css />
+<!-- <title style="font-family:'NotoSans-Regular'">VisualCOBie: Interactive Facility Data Visualization and Navigation Platform</title> -->
+<meta charset=utf-8 />
+<meta 'name=viewport' 'content=width=device-width,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0' />
+
+
+	<style>
+		
+		#blocker {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.5);
+		}
+
+		#instructions {
+			width: 100%;
+			height: 100%;
+			display: -webkit-box;
+			display: -moz-box;
+			display: box;
+			-webkit-box-orient: horizontal;
+			-moz-box-orient: horizontal;
+			box-orient: horizontal;
+			-webkit-box-pack: center;
+			-moz-box-pack: center;
+			box-pack: center;
+			-webkit-box-align: center;
+			-moz-box-align: center;
+			box-align: center;
+			color: #ffffff;
+			text-align: center;
+			cursor: pointer;
+		}
+
+		.inline{
+			display:inline;
+			position:absolute; 
+			top:0px;
+			left:1280px;
+		}
+
+		.fixDiv {
+		position: fixed;
+		top: 1em;
+		left: 1em;
+		}
+
+
+		.fixBridge{
+		position: fixed;
+		top: 100em;
+		left: 100em;
+
+
+		}
+
+
+	</style>
+
+
+</head>
+
+<body>
+
+			<div id="blocker">
+
+			<div id="instructions">
+				<span style="font-size:60px">Click to play</span>
+				<br />
+				<span id="span2">(W)</span>
+			</div>
+			
+
+			</div>
+			<p class="fixDiv"> hehehehehe</p> <!-- 让某个dom浮于整个页面最顶端 -->
+
+
+<script src="js/three.min.js" ></script>
+<script src="./js/jquery-3.1.0.min.js"></script>
+<script src="js//OrbitControls.js" ></script>
+<script src="js/stats.min.js" ></script>
+<script src="js/VisualCOBie_Walk&Select.js"></script>
+<script src="js//MTLLoader.js"></script>
+<script src="js//OBJLoader.js"></script>
+<script src="js//OBJMTLLoader.js"></script>
+<script src="js//Projector.js"></script>
+<script type="text/javascript" src="./js/dat.gui.js"></script>
+<script type="text/javascript" src="./js/dat.gui.min.js"></script>
+<script src="js/ja-core.js" ></script>
+<script src="js/v3-core.js" ></script>
+<script src="js/jath-three.js"></script>
+<script src="js/v3pl-permalinks.js" ></script>
+<script src="js/jafo-file-open.js" ></script>
+<script src="js/jaes-export-scene.js" ></script>
+<script src="js/v3vj-va3c-json.js" ></script>
+<script src="js/v3vj-va3c-samples.js" ></script>
+<script src="js/v3te-threejs-examples.js" ></script>
+<script src="js/v3fa-fgx-aircraft-json.js" ></script>
+<script src="js/v3sh-stemkoski-html.js" ></script>
+<script src="js/v3mh-meier-html.js" ></script>
+<script src="js/v3mc-meier-controls.js" ></script>
+<script src="js/jage-geometry.js" ></script>
+<script src="js/jama-materials.js" ></script>
+<script src="js/jama-materials-data.js" ></script>
+<script src="js/jali-lights.js" ></script>
+<script src="js/jaca-camera.js" ></script>
+<script src="js/japr-preferences.js" ></script>
+
+<script>
+
+	$(document).ready(function(){
+
+		var blockerDisplay = true;
+
+
+		$("body").keyup(function(e){
+			console.log(e.keyCode);
+			if(e.keyCode ===32){
+				if(blockerDisplay ===true){
+					$("#blocker").fadeOut();
+					blockerDisplay = false;
+					$("#gui1").fadeIn();
+				}
+				else{
+					$("#blocker").fadeIn();
+					blockerDisplay = true;
+					$("#gui1").fadeOut();
+				};
+				
+			};
+
+		});
+
+        
+		//定义某个html文字闪烁。 其实就是不断地fadeOut,fadeIn. 
+		function blink(){
+			$("#span2").fadeOut("slow",function(){
+				$(this).fadeIn("slow",function(){
+					blink();
+				})
+			})
+		};
+
+		//blink();
+
+
+
+		})
+
+
+
+    //添加左侧菜单栏。 是通过外部JS文件加载的。 JS文件通过document.appendChild(),直接把html content添加了。
+	// 	JA.init = function() {
+	// 	JA.container = document.body.appendChild( document.createElement( 'div' ) );
+
+	// 	JA.addCSS();
+	// 	JA.addMenu();
+
+	// 	JAFO.addFileOpenTab();
+	// 	V3.addAboutVa3cTab();
+	// 	V3.addAboutVa3cTab2();
+	// 	//V3PL.addPermalinksTab();
+	// 	JAES.addExportersTab();
+	// 	V3.addLibrariesTab();
+
+
+	// 	V3.init();
+
+	// }
+
+	// JA.init();
+
+// BU SAYFA TEK KISI KONTROLU, KAMERA NAVIGASYON VE YURUME GIBI BUTUN OZELLIKLERI BARINDIRIYOR.
+
+	var info, renderer, scene, camera, controls, stats, light;
+	var geometry, material, mesh, helper;
+	var scene2;
+	var object, object2, objects;
+	var raycaster;
+	var mouse;
+	var intersected;
+	var parameters;
+	var gui = new dat.GUI();
+	
+	var clock = new THREE.Clock();
+
+	init();
+	animate();
+
+    //让屏幕最大化。不会出现右侧和下侧的滑动条。
+	var fullscreenchange = function ( event ) {
+							if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+								document.removeEventListener( 'fullscreenchange', fullscreenchange );
+								document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+								element.requestPointerLock();
+							}
+						};
+
+	document.addEventListener( 'fullscreenchange', fullscreenchange, true );
+	document.addEventListener( 'mozfullscreenchange', fullscreenchange, true );
+	
+
+	function init() {
+		
+
+		document.body.style.cssText = 'font: 300 14pt Raleway; float:left; overflow: hidden; position:fixed;' ;
+
+		info = document.body.appendChild( document.createElement( 'div' ) );
+		info.id = '3dmodel'
+		info.style.cssText = 'left: 0; position: absolute; margin: auto; text-align: center; right: 0; max-width: 50%; font: "Raleway-Regular" ';
+
+
+
+        //将右上角的gui放到div中。 我们就可以控制它的显示喝隐藏了。
+		var guiContainer = document.createElement("div");
+		guiContainer.id = "gui1";
+		guiContainer.style.display = "none";
+		guiContainer.className = "inline"; //定义absolute位置，不然div的展开移动会对其他dom位置产生影响。
+		document.body.appendChild(guiContainer);
+		guiContainer.appendChild(gui.domElement);
+
+		
+		//
+		
+		
+        //定义渲染器
+		renderer = new THREE.WebGLRenderer( { alpha: 1, antialias: true, clearColor: 0xffffff }  );	
+		renderer.setSize( (window.innerWidth), (window.innerHeight));
+		renderer.shadowMapEnabled = true;
+		renderer.shadowMapSoft = true;
+		document.body.appendChild( renderer.domElement );
+
+	
+	    //定义scene
+		scene = new THREE.Scene();
+
+        //定义相机
+		camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 5000 );
+		camera.position.set( 20, 5, 50 );
+		scene.add( camera ); // for light to follow
+
+		// 定义鼠标Controls
+		controls = new THREE.OrbitControls( camera, renderer.domElement );
+		controls.minDistance = 10;
+		controls.maxDistance = 1000;
+
+		// 定义Lights
+		light = new THREE.AmbientLight( 0x888888 );
+		scene.add( light );
+
+        var spotLight = new THREE.SpotLight(0x888888);
+        spotLight.position.set(100, 140, 130);
+        spotLight.intensity = 2;
+        scene.add(spotLight);
+
+		
+		// Ground Plane
+        //添加地表以及材质。
+		
+		// geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
+		// 		geometry.rotateX( - Math.PI / 2 );
+		// 		for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+		// 			var vertex = geometry.vertices[ i ];
+		// 			vertex.x += Math.random() * 20 - 10;
+		// 			vertex.y += Math.random() * 2;
+		// 			vertex.z += Math.random() * 20 - 10;
+		// 		}
+		// 		for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
+		// 			var face = geometry.faces[ i ];
+		// 			face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+		// 			face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+		// 			face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+		// 		}
+		// 		material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } ); //定义地面材质。
+		// 		mesh = new THREE.Mesh( geometry, material );
+				//scene.add( mesh );
+        
+
+
+
+		//添加grid 和 xyz坐标系。
+		helper = new THREE.BoxHelper( mesh ); //helper是什么
+		helper.material.color.setRGB( 1, 0, 1 );
+		scene.add( helper );
+
+		var axisHelper = new THREE.AxisHelper( 50 );
+		axisHelper.position.set ( 0, -0.1, 0 );
+		scene.add( axisHelper );
+		
+		var helper = new THREE.GridHelper( 50, 10 );
+		helper.position.set( 0, -0.2, 0 );
+		scene.add( helper );
+
+
+
+
+        //Load object 
+		objects = [];
+		var loader = new THREE.OBJMTLLoader();
+		loader.addEventListener('load', function(event){
+			object = event.content;
+			object.traverse(function(child){
+				if (child instanceof THREE.mesh) {
+					//The child is needed for the raycaster intersection later
+					//By default, VisualCOBie does not have intersection
+				};
+			});
+		});
+
+
+
+
+		// DUPLEX APARTMENT ARCHITECTURAL MODEL
+		
+		loader.load("http://localhost:8080/model/DuplexArcModel.obj", "http://localhost:8080/model/DuplexArcModel.mtl", function (object) {
+			object.translateY(-3);
+			object.name = 'building';
+			object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+			object.translateZ(4);
+			object.position.set ( 0, 3, 0 );
+			objects.push(object);
+
+			scene.add(object);
+
+			//load end 
+
+			
+			//定义parameters对象，储存obj模型的属性。 算是基于对象编程的一种思路。 把数据定义在一个object中，然后通过调用object.attribute来使用数据。
+			
+			parameters = {
+				x:0, y:3, z:0,
+				color: "#ff0000",
+				opacity: 1, 
+				visible: true,
+				reset: function() { resetArc() }
+			};
+
+
+
+
+			//var folderBuilding = gui.addFolder('Duplex Apartment');
+			// 定义右上角control. 父级为一个folder，其他命令包含在这个folder里边.
+			var folder1 = gui.addFolder('Building_Arc');
+			var objectX = folder1.add(parameters, 'x').min(-20).max(20).step(1).listen();
+			var objectY = folder1.add( parameters, 'y' ).min(0).max(20).step(1).listen();
+			var objectZ = folder1.add( parameters, 'z' ).min(-20).max(20).step(1).listen();
+			
+
+			objectX.onChange(function(value){
+				object.position.x = value;  });
+			objectY.onChange(function(value){
+				object.position.y = value;  });
+			objectZ.onChange(function(value){
+				object.position.z = value;  });
+			
+			var objectOpacity = folder1.add(parameters, 'opacity').min(0).max(1).step(0.01).name('Opacity').listen();
+			objectOpacity.onChange(function(value){
+				object.traverse( function (child) {
+					if (child instanceof THREE.Mesh) {
+						child.material.opacity = value;
+						child.material.transparent = true;
+					}
+				});
+			});
+
+			var objectVisible = folder1.add( parameters, 'visible').name('Visible?').listen();
+			objectVisible.onChange(function(value)
+				{   object.visible = value;  	});
+
+			folder1.add( parameters, 'reset' ).name("Reset Building_Arc");
+			gui.open();
+
+
+			//定义右上角controller - end 
+
+			function updateArc()
+			{
+		
+			object.position.x = parameters.x;
+			object.position.y = parameters.y;
+			object.position.z = parameters.z;
+			//object.color.setHex( parameters.color.replace("#", "0x") );
+			object.opacity = parameters.opacity;  
+			object.transparent = true;
+			object.visible = parameters.visible;
+			
+			}
+
+			function resetArc()
+			{
+			parameters.x = 0;
+			parameters.y = 3;
+			parameters.z = 0;
+			//parameters.color = "#ff0000";
+			parameters.opacity = 1;
+			parameters.visible = true;
+			updateArc();
+			}
+						//return object;
+		});
+
+
+
+		//Load Elec model. 
+			
+		loader.load("http://localhost:8080/model/DuplexElecModel.obj", "http://localhost:8080/model/DuplexElecModel.mtl", function (object) {
+			object.translateY(-3);
+			object.name = 'buildingElec'; //这里要给不同的模型不同的名字。
+			object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+			object.translateZ(4);
+			object.position.set ( 0, 3, 0 );
+			objects.push(object);
+
+			scene.add(object);
+		});
+
+			//load end 
+
+
+		//Load bridge model. 
+			
+		loader.load("http://localhost:8080/model/B1BridgeObj.obj", "http://localhost:8080/model/B1BridgeObj.mtl", function (object) {
+			object.translateY(-3);
+			object.name = 'B1Bridge'; //这里要给不同的模型不同的名字。
+			object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+			object.translateZ(4);
+			object.position.set ( 0, 3, 0 );	
+			objects.push(object);
+			//bridgeContainer.appendChild(object.dom);
+			//bridge3D.add(object);
+			//bridgeContainer.appendChild(bridge3D);
+
+			scene.add(object);
+		});
+
+			//load end 
+
+
+
+	}; //The end token for init()
+
+	
+
+	function animate( timestamp ) {
+	
+		renderer.render( scene, camera );
+		controls.update( clock.getDelta() );
+		//stats.update();
+		requestAnimationFrame( animate );
+
+	}
+
+</script>
+</body>
+</html>
