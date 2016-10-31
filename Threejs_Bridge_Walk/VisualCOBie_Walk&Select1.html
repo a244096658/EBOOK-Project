@@ -301,6 +301,7 @@
         //Load object 
 		objects = [];
 		var loader = new THREE.OBJMTLLoader();
+		loader.crossOrigin = '';//This function is allowing the brower to read texture files.
 		loader.addEventListener('load', function(event){
 			object = event.content;
 			object.traverse(function(child){
@@ -316,7 +317,7 @@
 
 		// DUPLEX APARTMENT ARCHITECTURAL MODEL
 		
-		loader.load("http://localhost:8080/model/DuplexArcModel.obj", "http://localhost:8080/model/DuplexArcModel.mtl", function (object) {
+		loader.load("http://localhost:8080//DuplexArcModel.obj", "http://localhost:8080/DuplexArcModel.mtl", function (object) {
 			object.translateY(-3);
 			object.name = 'building';
 			object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
@@ -400,33 +401,54 @@
 			parameters.visible = true;
 			updateArc();
 			}
-						//return object;
-		});
+					 
+		}); //load1 end
 
 
 
-		//Load Elec model. 
+		// //Load Elec model. 
 			
-		loader.load("http://localhost:8080/model/DuplexElecModel.obj", "http://localhost:8080/model/DuplexElecModel.mtl", function (object) {
-			object.translateY(-3);
-			object.name = 'buildingElec'; //这里要给不同的模型不同的名字。
-			object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
-			object.translateZ(4);
-			object.position.set ( 0, 3, 0 );
-			objects.push(object);
+		// loader.load("http://localhost:8080/model/DuplexElecModel.obj", "http://localhost:8080/model/DuplexElecModel.mtl", function (object) {
+		// 	object.translateY(-3);
+		// 	object.name = 'buildingElec'; //这里要给不同的模型不同的名字。
+		// 	object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+		// 	object.translateZ(4);
+		// 	object.position.set ( 0, 3, 0 );
+		// 	objects.push(object);
 
-			scene.add(object);
-		});
+		// 	scene.add(object);
+		// });
 
-			//load end 
+		// 	//load end 
 
 
-		//Load bridge model. 
+		// //Load bridge model. 
 			
-		loader.load("http://localhost:8080/model/B1BridgeObj.obj", "http://localhost:8080/model/B1BridgeObj.mtl", function (object) {
+		// loader.load("http://localhost:8080/model/B1BridgeObj.obj", "http://localhost:8080/model/B1BridgeObj.mtl", function (object) {
+		// 	object.translateY(-3);
+		// 	object.name = 'B1Bridge'; //这里要给不同的模型不同的名字。
+		// 	object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+		// 	object.translateZ(4);
+		// 	object.position.set ( 0, 3, 0 );	
+		// 	objects.push(object);
+		// 	//bridgeContainer.appendChild(object.dom);
+		// 	//bridge3D.add(object);
+		// 	//bridgeContainer.appendChild(bridge3D);
+
+		// 	scene.add(object);
+		// });
+
+		// 	//load end 
+
+
+
+		
+		//Load2 bridge geometry model. 
+			
+		loader.load("http://localhost:8080/caoBridge.obj", "http://localhost:8080/caoBridge.mtl", function (object) {
 			object.translateY(-3);
 			object.name = 'B1Bridge'; //这里要给不同的模型不同的名字。
-			object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+			//object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
 			object.translateZ(4);
 			object.position.set ( 0, 3, 0 );	
 			objects.push(object);
@@ -437,7 +459,35 @@
 			scene.add(object);
 		});
 
-			//load end 
+			//load2 end 
+
+
+		// //Load 3 bridge reinforcement model 			
+		// loader.load("http://localhost:8080/Rebar2.obj", "http://localhost:8080/rebar2.mtl", function (object) {
+		// 	object.translateY(-3);
+		// 	object.name = 'B1BridgeRebar'; //这里要给不同的模型不同的名字。
+		// 	//object.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), -90 * ( Math.PI/180 ) );
+		// 	object.translateZ(4);
+		// 	object.position.set ( 0, 3, 0 );	
+		// 	objects.push(object);
+		// 	//bridgeContainer.appendChild(object.dom);
+		// 	//bridge3D.add(object);
+		// 	//bridgeContainer.appendChild(bridge3D);
+
+		// 	scene.add(object);
+		// });
+
+		// //Load 3 end 
+
+
+
+
+
+			
+
+
+
+
 
 
 
